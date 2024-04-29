@@ -16,13 +16,13 @@ public class Grid {
     }
 
     //sets a tile to active and gives a type
-    public void setTile(int row, int col, String type){
-        tiles[row][col].setType(type);
+    public void setTile(int row, int col, Element element){
+        tiles[row][col].setElement(element);
         tiles[row][col].setActive(true);
     }
     //removes tile at location
     public void unsetTile(int row, int col){
-        tiles[row][col].setType("");
+        tiles[row][col].setElement(null);
         tiles[row][col].setActive(false);
     }
 
@@ -30,23 +30,32 @@ public class Grid {
         return  tiles[row][col].isActive();
     }
 
+    public Element getTileElement(int row, int col){
+        return  tiles[row][col].getElement();
+    }
+
+    public Tile[][] getTilesArray(){
+        return tiles;
+    }
+
 
     //tile class
     private class Tile{
-        private String type;
+        private Element element;
         private boolean active;
         
         Tile() {
-            this.type = "";
+            element = null;
             this.active = false;
         }
 
         //getters and setters for tyle 
-        public String getType() {
-            return type;
+        public Element getElement() {
+            return element;
         }
-        public void setType(String type) {
-            this.type = type;
+        public void setElement(Element element) {
+
+            this.element = element;
         }
 
         public boolean isActive() {
