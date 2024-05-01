@@ -1,6 +1,6 @@
 public abstract class Element {
-     private int rowPos;
-     private int colPos;
+     protected int rowPos;
+     protected int colPos;
 
 
      Element(int rowPos, int colPos, Grid g){
@@ -20,8 +20,19 @@ public abstract class Element {
         g.setCell(rowPos, colPos, this);
         
     }
+
+    public void updateCoords(int newRow, int newCol){
+        rowPos = newRow;
+        colPos = newCol;
+    }
     //basic movement 
-    public abstract void move(Grid grid);
+    public abstract void moveSim(Grid grid);
+
+    @Override
+    public String toString() {
+        
+        return rowPos + " " + colPos + " ";
+    }
 
 
 }

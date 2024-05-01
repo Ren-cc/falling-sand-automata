@@ -3,7 +3,7 @@ import java.awt.event.*;
 import java .util.ArrayList;
 import java.util.Random;
 import javax.swing.*;
-
+import java.util.List;
 
 
 public class SandSim extends JPanel implements ActionListener, MouseListener {
@@ -13,7 +13,9 @@ public class SandSim extends JPanel implements ActionListener, MouseListener {
 
 
     Timer gameLoop;
-
+    Grid grid;
+    
+    ArrayList<Element> elementArray;
 
 
     SandSim(int boardWidth, int boardHeight){
@@ -33,8 +35,9 @@ public class SandSim extends JPanel implements ActionListener, MouseListener {
         gameLoop.start();
 
 
+        grid = new Grid(boardWidth, boardHeight, 30);
 
-
+        elementArray = new ArrayList<>();
 
     }
 
@@ -46,15 +49,33 @@ public class SandSim extends JPanel implements ActionListener, MouseListener {
     }
 
     public void draw(Graphics g){
+        for(int i = 0; i < grid.gridRows; i++){
+            for(int j = 0; j < grid.gridCols; j++){
+                
+                if(grid.getCell(j, i) instanceof Sand){
+                    g.setColor(Color.WHITE);
+                    g.fillRect(i*tileSize, j*tileSize, tileSize, tileSize);
+                }
+                else if (grid.getCell(j, i) == null){
+                    g.setColor(Color.BLACK);
+                    g.fillRect(i*tileSize, j*tileSize, tileSize, tileSize);
+                    g.setColor(Color.GRAY);
+                    g.drawRect(i*tileSize, j*tileSize, tileSize, tileSize);
+                }
 
-        
+                    
+            }
+        }
     }
+        
 
 
     @Override
     public void actionPerformed(ActionEvent e) {
         // Move all sand particles
-
+        for(int i = 0; i < elementArray.size(); i++){
+            elementArray.get(i).moveSim(grid);
+        }
         
         repaint();
     
@@ -67,7 +88,13 @@ public class SandSim extends JPanel implements ActionListener, MouseListener {
                 int clickedY = e.getY() / tileSize;
         
                 // Create a new sand element at the clicked position
+                elementArray.add(new Sand(clickedY, clickedX, grid));
 
+                
+                grid.getRadialProximity(elementArray.get(0).rowPos, elementArray.get(0).colPos);
+                if(elementArray.size() > 1){
+                    //grid.getRadialProximity(elementArray.get(1).rowPos, elementArray.get(1).colPos);
+                }
         
                 
     }
