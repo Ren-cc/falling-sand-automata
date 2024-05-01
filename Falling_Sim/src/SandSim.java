@@ -6,17 +6,21 @@ import javax.swing.*;
 import java.util.List;
 
 
-public class SandSim extends JPanel implements ActionListener, MouseListener {
+public class SandSim extends JPanel implements ActionListener, MouseListener, MouseMotionListener {
     int boardWidth;
     int boardHeight;
-    int tileSize = 30;
+    int tileSize = 3;
 
 
     Timer gameLoop;
+    
     Grid grid;
+    boolean mousePressed;
+    boolean mousePressedRight;
     
     ArrayList<Element> elementArray;
 
+    Random random;
 
     SandSim(int boardWidth, int boardHeight){
         this.boardWidth = boardWidth;
@@ -29,16 +33,18 @@ public class SandSim extends JPanel implements ActionListener, MouseListener {
 
         // Add mouse listener to the panel
         addMouseListener(this);
+        addMouseMotionListener(this);
 
         //game timer
-		gameLoop = new Timer(100, this); //how long it takes to start timer, milliseconds gone between frames 
+		gameLoop = new Timer(0, this); //how long it takes to start timer, milliseconds gone between frames 
         gameLoop.start();
 
 
-        grid = new Grid(boardWidth, boardHeight, 30);
+        grid = new Grid(boardWidth, boardHeight, tileSize);
 
         elementArray = new ArrayList<>();
 
+        random = new Random();
     }
 
     public void paintComponent(Graphics g){
@@ -52,16 +58,14 @@ public class SandSim extends JPanel implements ActionListener, MouseListener {
         for(int i = 0; i < grid.gridRows; i++){
             for(int j = 0; j < grid.gridCols; j++){
                 
-                if(grid.getCell(j, i) instanceof Sand){
-                    g.setColor(Color.WHITE);
+                if(grid.getCell(j, i) != null){
+
+
+                    g.setColor(new Color(grid.getCell(j, i).color));
+
                     g.fillRect(i*tileSize, j*tileSize, tileSize, tileSize);
                 }
-                else if (grid.getCell(j, i) == null){
-                    g.setColor(Color.BLACK);
-                    g.fillRect(i*tileSize, j*tileSize, tileSize, tileSize);
-                    g.setColor(Color.GRAY);
-                    g.drawRect(i*tileSize, j*tileSize, tileSize, tileSize);
-                }
+
 
                     
             }
@@ -83,30 +87,60 @@ public class SandSim extends JPanel implements ActionListener, MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-                // Get the clicked position
-                int clickedX = e.getX() / tileSize;
-                int clickedY = e.getY() / tileSize;
-        
-                // Create a new sand element at the clicked position
-                elementArray.add(new Sand(clickedY, clickedX, grid));
+        // Get the clicked position
+        int clickedX = e.getX() / tileSize;
+        int clickedY = e.getY() / tileSize;
 
-                
-                grid.getRadialProximity(elementArray.get(0).rowPos, elementArray.get(0).colPos);
-                if(elementArray.size() > 1){
-                    //grid.getRadialProximity(elementArray.get(1).rowPos, elementArray.get(1).colPos);
+        // Create a new sand element at the clicked position
+
+
+
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            // Left mouse button clicked
+            System.out.println("Left mouse button clicked");
+            for(int i = -5; i < 5; i+=2){
+                for(int j = -5; j < 5; j+=2){
+                    if(grid.getCell(clickedY + i, clickedX + j) instanceof Sand == false){
+                        elementArray.add(new Sand(clickedY + i, clickedX + j, grid));
+
+                    }  
                 }
+            }
+        } else if (e.getButton() == MouseEvent.BUTTON3) {
+            // Right mouse button clicked
+            System.out.println("Right mouse button clicked");
+            for(int i = -5; i < 5; i+=2){
+                for(int j = -5; j < 5; j+=2){
+                    if(grid.getCell(clickedY + i, clickedX + j) instanceof Water == false){
+                        elementArray.add(new Water(clickedY + i, clickedX + j, grid));
+                        repaint();
+                    } 
+                }
+            }
+        }
+
+        repaint();
         
                 
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
+        
+
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            mousePressed = true;
+            
+        } else if (e.getButton() == MouseEvent.BUTTON3) {
+            mousePressedRight = true;
+        }
 
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        mousePressed = false;
+        mousePressedRight = false;
     }
 
     @Override
@@ -116,6 +150,46 @@ public class SandSim extends JPanel implements ActionListener, MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        if (mousePressed || mousePressedRight) {
+            // Get the clicked position
+            int clickedX = e.getX() / tileSize;
+            int clickedY = e.getY() / tileSize;
+
+            // Create a new sand element at the clicked position
+            if (mousePressed) {
+                // Left mouse button clicked
+                System.out.println("Left mouse button Dragged");
+                for(int i = -5; i < 5; i+=2){
+                    for(int j = -5; j < 5; j+=2){
+                        if(grid.getCell(clickedY + i, clickedX + j) instanceof Sand == false){
+                            elementArray.add(new Sand(clickedY + i, clickedX + j, grid));
+                            repaint();
+                        }  
+                    }
+                }
+            } else if (mousePressedRight) {
+                // Right mouse button clicked
+                for(int i = -5; i < 5; i+=2){
+                    for(int j = -5; j < 5; j+=2){
+                        if(grid.getCell(clickedY + i, clickedX + j) instanceof Water == false){
+                            elementArray.add(new Water(clickedY + i, clickedX + j, grid));
+                            repaint();
+                        } 
+                    }
+                }
+            }
+            repaint();
+            
+        }
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
 
     }
 

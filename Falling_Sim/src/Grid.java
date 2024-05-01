@@ -23,7 +23,7 @@ public class Grid {
         this.cells = new Element[gridRows][gridCols];
     }
 
-    private boolean isValidCell(int row, int col) {
+    boolean isValidCell(int row, int col) {
         return row >= 0 && row < gridRows && col >= 0 && col < gridCols;
     }
 
@@ -94,9 +94,6 @@ public Element[] getRadialProximity(int row, int col) {
     } else {
      proximityArray[NW] = cells[row - 1][col - 1];
     }
-
-    // Print for debugging
-    System.out.println(Arrays.toString(proximityArray));
 
     return proximityArray;
 }

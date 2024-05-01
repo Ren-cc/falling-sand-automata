@@ -1,6 +1,8 @@
 public abstract class Element {
      protected int rowPos;
      protected int colPos;
+     public int color;
+     public int density;
 
 
      Element(int rowPos, int colPos, Grid g){
@@ -12,7 +14,7 @@ public abstract class Element {
         
     }
 
-    Element(int rowPos, int colPos, String elementName, String color, Grid g){
+    Element(int rowPos, int colPos, String color, Grid g){
         this.rowPos = rowPos;
         this.colPos = colPos;
 
