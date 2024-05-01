@@ -1,69 +1,91 @@
 public class Grid {
-    private Tile[][] tiles;
-    public int numRows;
-    public int numCols;
+    int gridCols;
+    int gridRows;
+    private Element[][] cells;
 
-    public Grid(int rows, int cols){
-        this.numRows = rows;
-        this.numCols = cols;
-        //sets up grid
-        tiles = new Tile[rows][cols];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                tiles[i][j] = new Tile(); 
+
+    public Grid(int width, int height, int cellSize) {
+        this.gridCols = width/cellSize;
+        this.gridRows = height/cellSize;
+        this.cells = new Element[gridRows][gridCols];
+    }
+
+    public void setCell(int row, int col, Element value) {
+        if (isValidCell(row, col)) {
+            cells[row][col] = value;
+        }
+    }
+
+    public Element getCell(int row, int col) {
+        if (isValidCell(row, col)) {
+            return cells[row][col];
+        }
+        return null; // Default value for out-of-bounds cells
+    }
+
+    // if(row < 0 || row > gridRows || col < 0 || col > gridCols || cells[row][col] != null){
+    //     proximityArray[0] = false;
+    // }
+
+    public boolean[] getRadialProximity(int row, int col){
+        boolean[] proximityArray = new boolean[7];
+            //North = 0
+            if(row - 1 < 0 || cells[row][col] != null){
+                proximityArray[0] = false;
+            }else{
+                proximityArray[0] = true;
             }
-        }
+            // North East = 1
+            if(row-1 < 0 || col+1 > gridCols || cells[row][col] != null){
+                proximityArray[1] = false;
+            }else{
+                proximityArray[1] = true;
+            }
+            //East = 2
+            if(col + 1 > gridCols || cells[row][col] != null){
+                proximityArray[2] = false;
+            }else{
+                proximityArray[2] = true;
+            }
+            //South East = 3
+            if(row +1 > gridRows || col+1 > gridCols || cells[row][col] != null){
+                proximityArray[3] = false;
+            }else{
+                proximityArray[3] = true;
+            }
+            //South = 4
+            if(row + 1 > gridRows || cells[row][col] != null){
+                proximityArray[4] = false;
+            }else{
+                proximityArray[4] = true;
+            }
+            //South West = 5
+            if(row +1 > gridRows || col-1 < 0 || cells[row][col] != null){
+                proximityArray[5] = false;
+            }else{
+                proximityArray[5] = true;
+            }
+            //West = 6
+            if(col - 1 < 0 || cells[row][col] != null){
+                proximityArray[6] = false;
+            }else{
+                proximityArray[6] = true;
+            }
+            //North West = 7
+            if(row-1 < 0 || col-1 < 0 || cells[row][col] != null){
+                proximityArray[7] = false;
+            }else{
+                proximityArray[7] = true;
+            }
+
+        return proximityArray;
     }
 
-    //sets a tile to active and gives a type
-    public void setTile(int row, int col, Element element){
-        tiles[row][col].setElement(element);
-        tiles[row][col].setActive(true);
-    }
-    //removes tile at location
-    public void unsetTile(int row, int col){
-        tiles[row][col].setElement(null);
-        tiles[row][col].setActive(false);
-    }
-
-    public boolean isTileActive(int row, int col){
-        return  tiles[row][col].isActive();
-    }
-
-    public Element getTileElement(int row, int col){
-        return  tiles[row][col].getElement();
-    }
-
-    public Tile[][] getTilesArray(){
-        return tiles;
-    }
-
-
-    //tile class
-    private class Tile{
-        private Element element;
-        private boolean active;
-        
-        Tile() {
-            element = null;
-            this.active = false;
-        }
-
-        //getters and setters for tyle 
-        public Element getElement() {
-            return element;
-        }
-        public void setElement(Element element) {
-
-            this.element = element;
-        }
-
-        public boolean isActive() {
-            return active;
-        }
-        public void setActive(boolean active) {
-            this.active = active;
-        }
-
+    private boolean isValidCell(int row, int col) {
+        return row >= 0 && row < gridRows && col >= 0 && col < gridCols;
     }
 }
+
+
+
+

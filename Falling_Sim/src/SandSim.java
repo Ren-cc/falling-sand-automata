@@ -10,7 +10,7 @@ public class SandSim extends JPanel implements ActionListener, MouseListener {
     int boardWidth;
     int boardHeight;
     int tileSize = 30;
-    Grid grid;
+
 
     Timer gameLoop;
 
@@ -22,7 +22,7 @@ public class SandSim extends JPanel implements ActionListener, MouseListener {
         setPreferredSize(new Dimension(this.boardWidth, this.boardHeight));
         setBackground(Color.black);
 
-        grid = new Grid((this.boardWidth/tileSize), (this.boardHeight/tileSize));
+        
 
 
         // Add mouse listener to the panel
@@ -47,54 +47,17 @@ public class SandSim extends JPanel implements ActionListener, MouseListener {
 
     public void draw(Graphics g){
 
-         
-
-        for(int i = 0; i < grid.numRows; i++){
-            for(int j = 0; j < grid.numCols; j++){
-                if(grid.isTileActive(j, i) == false){
-                    g.setColor(Color.green);
-                    g.fillRect(i*tileSize, j*tileSize, tileSize, tileSize);
-                    g.setColor(Color.BLACK);
-                    g.drawRect(i*tileSize, j*tileSize, tileSize, tileSize);
-
-                }
-                else{
-                    g.setColor(Color.red);
-                    g.fillRect(i*tileSize, j*tileSize, tileSize, tileSize);
-                }
-            }
-        }
+        
     }
 
 
     @Override
     public void actionPerformed(ActionEvent e) {
         // Move all sand particles
-        boolean moved = false;
-        
-            for (int row = 0; row < grid.numRows; row++) {
-                for (int col = 0; col < grid.numCols; col++) {
-                    Element element = grid.getTileElement(row, col);
-                    if (element instanceof Sand) {
-                        element.move(grid);
-                        moved = true;
-                        repaint();
-                        break;
-                    }
-                    if(moved){
-                        repaint();
-                        break;
-                    }
-                
-            }
-           
+
         
         repaint();
-    }
-
-       //if (gameOver) {
-        //    gameLoop.stop();
-        //}
+    
     }
 
     @Override
@@ -104,8 +67,7 @@ public class SandSim extends JPanel implements ActionListener, MouseListener {
                 int clickedY = e.getY() / tileSize;
         
                 // Create a new sand element at the clicked position
-                grid.setTile(clickedY, clickedX, new Sand(clickedY, clickedX, grid));
-                repaint();
+
         
                 
     }
