@@ -33,7 +33,7 @@
   <h3 align="center">Particle Simulation</h3>
 
   <p align="center">
-    A fun coding exercise on particle interactions using simulation using stochastic cellular automata.
+    A fun coding exercise on particle interactions using stochastic cellular automata.
     <br />
     <!-- <a href="https://github.com/your_username/repo_name"><strong>Explore the docs »</strong></a>
     <br />
