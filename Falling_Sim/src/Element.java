@@ -3,6 +3,9 @@ public abstract class Element {
      protected int colPos;
      public int color;
      public int density;
+     public int accelerationX;
+     public int accelerationY;
+     public final int GRAVIT_CONST = 1;
 
 
      Element(int rowPos, int colPos, Grid g){
@@ -11,6 +14,9 @@ public abstract class Element {
 
 
         g.setCell(rowPos, colPos,this);
+
+        accelerationX = 0;
+        accelerationY = 0;
         
     }
 
@@ -27,8 +33,12 @@ public abstract class Element {
         rowPos = newRow;
         colPos = newCol;
     }
-    //basic movement 
+
+    //moves the elements 
     public abstract void moveSim(Grid grid);
+
+    //checks next available block 
+    public abstract int[] xyNextPosition(Grid grid);
 
     @Override
     public String toString() {

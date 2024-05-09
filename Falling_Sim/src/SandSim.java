@@ -9,10 +9,12 @@ import java.util.List;
 public class SandSim extends JPanel implements ActionListener, MouseListener, MouseMotionListener {
     int boardWidth;
     int boardHeight;
-    int tileSize = 3;
+    int tileSize = 1;
 
 
     Timer gameLoop;
+    static int delay = 10;
+    static int refreshPS = 1000/ delay;
     
     Grid grid;
     boolean mousePressed;
@@ -27,6 +29,7 @@ public class SandSim extends JPanel implements ActionListener, MouseListener, Mo
         this.boardHeight = boardHeight;
         setPreferredSize(new Dimension(this.boardWidth, this.boardHeight));
         setBackground(Color.black);
+        //setBackground(new Color(0xE5E4E2));
 
         
 
@@ -36,7 +39,7 @@ public class SandSim extends JPanel implements ActionListener, MouseListener, Mo
         addMouseMotionListener(this);
 
         //game timer
-		gameLoop = new Timer(0, this); //how long it takes to start timer, milliseconds gone between frames 
+		gameLoop = new Timer(delay, this); //how long it takes to start timer, milliseconds gone between frames 
         gameLoop.start();
 
 
@@ -97,7 +100,7 @@ public class SandSim extends JPanel implements ActionListener, MouseListener, Mo
 
         if (e.getButton() == MouseEvent.BUTTON1) {
             // Left mouse button clicked
-            System.out.println("Left mouse button clicked");
+
             for(int i = -5; i < 5; i+=2){
                 for(int j = -5; j < 5; j+=2){
                     if(grid.getCell(clickedY + i, clickedX + j) instanceof Sand == false){
@@ -108,7 +111,7 @@ public class SandSim extends JPanel implements ActionListener, MouseListener, Mo
             }
         } else if (e.getButton() == MouseEvent.BUTTON3) {
             // Right mouse button clicked
-            System.out.println("Right mouse button clicked");
+
             for(int i = -5; i < 5; i+=2){
                 for(int j = -5; j < 5; j+=2){
                     if(grid.getCell(clickedY + i, clickedX + j) instanceof Water == false){
@@ -163,7 +166,7 @@ public class SandSim extends JPanel implements ActionListener, MouseListener, Mo
             // Create a new sand element at the clicked position
             if (mousePressed) {
                 // Left mouse button clicked
-                System.out.println("Left mouse button Dragged");
+
                 for(int i = -5; i < 5; i+=2){
                     for(int j = -5; j < 5; j+=2){
                         if(grid.getCell(clickedY + i, clickedX + j) instanceof Sand == false){

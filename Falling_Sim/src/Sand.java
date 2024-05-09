@@ -3,6 +3,8 @@ import java.util.Random;
 
 public class Sand extends Element {
     Random random = new Random();
+    int accelerationDelay = 2;
+
 
     Sand(int rowPos, int colPos, Grid g) {
         super(rowPos, colPos, g);
@@ -27,31 +29,101 @@ public class Sand extends Element {
         
     }
 
+
+    //all particles should move like this. add to abstract and only have xyNextPos be in child classes
+    
     @Override
     public void moveSim(Grid grid) {
-    int randomNum = random.nextInt(2);
-
-    Element[] proximityArr = grid.getRadialProximity(this.rowPos, this.colPos);
-    if(proximityArr[4] == null){
-       grid.swapCells(this.rowPos, this.colPos, this.rowPos + 1, this.colPos);
-    }else{
-        if((proximityArr[5] == null && (proximityArr[3] != null || randomNum == 0))){
-            grid.swapCells(this.rowPos, this.colPos, this.rowPos + 1, this.colPos-1);
         
-        }
-        if(proximityArr[5] != null && proximityArr[5].density < this.density){
-            grid.swapCells(this.rowPos, this.colPos, this.rowPos + 1, this.colPos-1);
-        }
-        if((proximityArr[3] == null && (proximityArr[5] != null || randomNum == 1))){
-            grid.swapCells(this.rowPos, this.colPos, this.rowPos + 1, this.colPos+1);
-        }
-        if(proximityArr[3] != null && proximityArr[3].density < this.density ){
-            grid.swapCells(this.rowPos, this.colPos, this.rowPos + 1, this.colPos+1);
-        }
-    }
-    if(proximityArr[4] != null && proximityArr[4].density < this.density){
-        grid.swapCells(this.rowPos, this.colPos, this.rowPos + 1, this.colPos);
-    }
+
+            int[] nextPos = xyNextPosition(grid);
+            for(int i = 0; i <= Math.max(accelerationX, super.accelerationY); i++){
+                grid.swapCells(this.rowPos, this.colPos, this.rowPos + nextPos[1], this.colPos + nextPos[0]);
+             
+                if(super.accelerationX == 0 && super.accelerationY == 0){
+                    break;
+                }
+       
+            
+            }
+
+
+    
 }
+
+    int secondDelayCount;
+    @Override
+    public int[] xyNextPosition(Grid grid) {
+        int randomNum = random.nextInt(2);
+        int[] posArray = {0,0};
+
+        Element[] proximityArr = grid.getRadialProximity(this.rowPos, this.colPos);
+        if(proximityArr[4] == null){
+            // <0,1>
+            if(secondDelayCount == accelerationDelay){
+                accelerationY += super.GRAVIT_CONST;
+            }else{
+                secondDelayCount++;
+            }
+            posArray[1]++;
+            return posArray;
+        }else{
+            if(proximityArr[5] == null && (proximityArr[3] != null || randomNum == 0 )){
+                // <-1,1>
+                if(secondDelayCount == accelerationDelay){
+                    accelerationX += super.GRAVIT_CONST;
+                    accelerationY += super.GRAVIT_CONST;
+                }else{
+                    secondDelayCount++;
+                }
+                posArray[1]++;
+                posArray[0] = -1;
+                return posArray;
+            
+            }
+            if(proximityArr[5] != null && proximityArr[5].density < this.density){
+                // <-1,1>
+                // accelerationX += super.GRAVIT_CONST;
+                // accelerationY += super.GRAVIT_CONST;
+                posArray[1]++;
+                posArray[0] = -1;
+                return posArray;
+            }
+            if(proximityArr[3] == null && (proximityArr[5] != null || randomNum == 1 )){
+                // <1,1>
+                if(secondDelayCount == accelerationDelay){
+                    accelerationX += super.GRAVIT_CONST;
+                    accelerationY += super.GRAVIT_CONST;
+                }else{
+                    secondDelayCount++;
+                }
+                posArray[1]++;
+                posArray[0]++;
+                return posArray;
+            }
+            if(proximityArr[3] != null && proximityArr[3].density < this.density ){
+                // <1,1>
+                // accelerationX += super.GRAVIT_CONST;
+                // accelerationY += super.GRAVIT_CONST;
+                posArray[1]++;
+                posArray[0]++;
+                return posArray;
+            }
+        }
+        if(proximityArr[4] != null && proximityArr[4].density < this.density){
+            // <0,1>
+            if(secondDelayCount == accelerationDelay){
+                accelerationY += super.GRAVIT_CONST;
+            }else{
+                secondDelayCount++;
+            }
+            posArray[1]++;
+            return posArray;
+            
+        }
+        super.accelerationX = 0;
+        super.accelerationY = 0;
+        return posArray;
+    }
     
 }
